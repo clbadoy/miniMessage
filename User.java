@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class User extends Observer implements IUser {
+public class User extends Observer implements Visitor {
 
     private String userID;
     private ArrayList<User> followerList;
@@ -36,6 +36,11 @@ public class User extends Observer implements IUser {
     public void update(Subject subject) {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void accept(AdminVisitor adminVisitor) {
+        adminVisitor.visit(this);
     }
     
     

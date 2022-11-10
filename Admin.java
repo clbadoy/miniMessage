@@ -9,7 +9,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public class Admin extends JFrame {
+public class Admin extends JFrame implements AdminVisitor {
     
     private static Admin instance = null;
 
@@ -36,6 +36,8 @@ public class Admin extends JFrame {
     private Admin()
     {
         initComponents();
+        root = new DefaultMutableTreeNode();
+        treeStructure = new JTree(root);
     }
 
     public static Admin getInstance() 
@@ -64,5 +66,11 @@ public class Admin extends JFrame {
 
         root = new DefaultMutableTreeNode();
         treeStructure = new JTree(root);
+    }
+
+    @Override
+    public void visit(User user) {
+        // TODO Auto-generated method stub
+        
     }
 }
