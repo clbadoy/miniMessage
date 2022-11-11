@@ -177,7 +177,7 @@ public class Admin extends JFrame implements AdminVisitor {
         bottomRightPanel = new JPanel(bottomRightLayout);
         bottomRightPanel.setSize(290, 200);
         
-        displayTotalUserButton = new JButton("SHow User Total");
+        displayTotalUserButton = new JButton("Show User Total");
         displayTotalGroupButton = new JButton("Show Group Total");
         displayTotalMessageButton = new JButton("Show Message Total");
         displayPositiveMessageRatioButton = new JButton("Show Positive Percentage");
