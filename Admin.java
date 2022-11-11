@@ -5,15 +5,16 @@ import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.JOptionPane;
 
 
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
+import java.awt.event.*;
 
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class Admin extends JFrame implements AdminVisitor {
     private JPanel rightPanel;
 
     // Top Right Panels, buttons, text heirarchy
+    private JOptionPane popupPane;
+    private JFrame popUp;
     private GridLayout topRightLayout;
     private JPanel topRightPanel;
     private JPanel userPanel;
@@ -61,6 +64,9 @@ public class Admin extends JFrame implements AdminVisitor {
     private ArrayList<User> userList = new ArrayList<User>();
     private ArrayList<UserGroup> groupList = new ArrayList<UserGroup>();
 
+    private String newUser;
+    private String newGroup;
+
 
     // Constructor that revents classes to create another object of the Admin Class.
     private Admin()
@@ -90,6 +96,12 @@ public class Admin extends JFrame implements AdminVisitor {
         this.setSize(800,600);
         this.getContentPane().getInsets().set(10,10,10,10);
         this.setResizable(false);
+
+        // Initialize Popup
+        /*popUp = new JFrame("Pop Up");
+        this.setLayout(new GridBagLayout());
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(400, 400); */
 
         // Initialize right side of UI
         rightPanel = new JPanel();
@@ -158,6 +170,14 @@ public class Admin extends JFrame implements AdminVisitor {
         createUserGroupButton = new JButton("Create Group");
         viewUserButton = new JButton("Show User View");
 
+        // Button Functionality Start
+        /* createUserButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(popupPane, e, newGroup, ABORT);
+        } 
+        
+        ); */
+        // Button Functionality End
+
         userPanel.add(userField);
         userPanel.add(createUserButton);
         
@@ -181,6 +201,18 @@ public class Admin extends JFrame implements AdminVisitor {
         displayTotalGroupButton = new JButton("Show Group Total");
         displayTotalMessageButton = new JButton("Show Message Total");
         displayPositiveMessageRatioButton = new JButton("Show Positive Percentage");
+
+        // Button Functionality Start
+        displayTotalUserButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(popupPane, "Total Users: " + userList.size());
+        });
+
+        displayTotalGroupButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(popupPane, "Total Groups: " + groupList.size());
+        });
+        
+
+        // Button Functionality End
 
         bottomRightPanel.add(displayTotalUserButton);
         bottomRightPanel.add(displayTotalGroupButton);
