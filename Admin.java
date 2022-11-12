@@ -8,7 +8,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JOptionPane;
-
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeSelectionModel;
 
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
@@ -16,7 +17,7 @@ import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
 import java.awt.event.*;
 
-
+import java.util.regex.*;
 import java.util.ArrayList;
 
 
@@ -57,6 +58,8 @@ public class Admin extends JFrame implements AdminVisitor {
 
 
     // Left Screen Panel Region
+    private UserGroup rootUserGroup;
+    private DefaultTreeModel treeModel;
     private JScrollPane pane;
     private JTree tree;
     private DefaultMutableTreeNode root;
@@ -66,6 +69,8 @@ public class Admin extends JFrame implements AdminVisitor {
 
     private String newUser;
     private String newGroup;
+
+    private static String alphaNumeric = "^[a-zA-Z0-9_]+$";
 
 
     // Constructor that revents classes to create another object of the Admin Class.
@@ -129,8 +134,10 @@ public class Admin extends JFrame implements AdminVisitor {
         this.getContentPane().add(rightPanel, c);
 
         // Initialize left Side of UI + initialize Tree
-        root = new DefaultMutableTreeNode("Root");
+        rootUserGroup = new UserGroup("root", new User("Admin"));
+        root = new DefaultMutableTreeNode(rootUserGroup.getGroupID());
         tree = new JTree(root);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
         pane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         pane.setBounds(25, 25, 200, 700);
@@ -145,8 +152,6 @@ public class Admin extends JFrame implements AdminVisitor {
         c.gridy = 0;
         this.getContentPane().add(pane, c);
 
-        root = new DefaultMutableTreeNode();
-        tree = new JTree(root);
 
 
         // Finalize Initialization
@@ -171,9 +176,30 @@ public class Admin extends JFrame implements AdminVisitor {
         viewUserButton = new JButton("Show User View");
 
         // Button Functionality Start
-        /* createUserButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(popupPane, e, newGroup, ABORT);
-        } 
+        createUserButton.addActionListener(e -> {
+            newUser = userField.getText();
+            if(newUser.length() !=0 && newUser.matches(alphaNumeric)) {
+                addUser(newUser);
+            }
+            else {
+                JOptionPane.showMessageDialog(popupPane, "Error: Invalid input. Please enter a valid alphanumeric name.");
+            }
+        });
+        
+        
+        
+        /*(e -> {
+            newUser = userField.getText();
+    //        if(newUser.length() != 0 && newUser.matches(alphaNumeric)) {
+                User aPerson = new User(newUser);
+                root.add(new DefaultMutableTreeNode(aPerson));
+                treeModel = (DefaultTreeModel) tree.getModel();
+                treeModel.reload();
+      //      }
+        //    else {
+          //      JOptionPane.showMessageDialog(popupPane, "Error: Invalid input. Please make user alphanumeric.");
+            }
+        //} 
         
         ); */
         // Button Functionality End
@@ -220,6 +246,21 @@ public class Admin extends JFrame implements AdminVisitor {
         bottomRightPanel.add(displayPositiveMessageRatioButton);
     }
 
+
+    public void addUser(String username) {
+        User person = new User(username);
+
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(person.getUID());
+        DefaultMutableTreeNode userNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+        userNode.add(newNode);
+        //root.add(newNode);
+
+        treeModel = (DefaultTreeModel) tree.getModel();
+        treeModel.reload();
+
+        userList.add(person);
+
+    }
     @Override
     public void visit(User user) {
         // TODO Auto-generated method stub
