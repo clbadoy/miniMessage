@@ -27,4 +27,9 @@ public class Message {
     public int getMessageIndex() {
         return msgIndex;
     }
+
+    public String toString() {
+        String temp = "@" + getUser() + ": " + getMessage();
+        return temp;
+    }
 }

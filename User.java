@@ -7,7 +7,7 @@ public class User extends Observer implements Visitor {
     private ArrayList<User> followerList;
     private ArrayList<User> followingList;
 
-
+    private FeedList newsFeed;
     public User(String uid) {
         userID = uid;
         followerList = new ArrayList<User>();
@@ -31,6 +31,10 @@ public class User extends Observer implements Visitor {
         uName.getFollowerList().add(this);
     }
 
+    public String toString() {
+        return getUID();
+    }
+    
     // Update Feed
     @Override
     public void update(Subject subject) {
