@@ -1,24 +1,26 @@
 import java.util.ArrayList;
 
 
-public class User extends Observer implements Visitor {
+public class User extends Observer implements Visitor, Subject {
 
     private String userID;
-    private ArrayList<User> followerList;
+    private ArrayList<Observer> followerList;
     private ArrayList<User> followingList;
 
     private FeedList newsFeed;
+
     public User(String uid) {
         userID = uid;
-        followerList = new ArrayList<User>();
+        followerList = new ArrayList<Observer>();
         followingList = new ArrayList<User>();
+        newsFeed = new FeedList(this);
     }
 
     public String getUID() {
         return userID;
     }
 
-    public ArrayList<User> getFollowerList() {
+    public ArrayList<Observer> getFollowerList() {
         return followerList;
     }
 
@@ -26,9 +28,13 @@ public class User extends Observer implements Visitor {
         return followingList;
     }
 
+    public FeedList getNewsFeed() {
+        return newsFeed;
+    } 
+
     public void followUser(User uName) {
-        followingList.add(uName);
-        uName.getFollowerList().add(this);
+        uName.getFollowingList().add(this);
+        attach(uName);
     }
 
     public String toString() {
@@ -36,15 +42,32 @@ public class User extends Observer implements Visitor {
     }
     
     // Update Feed
-    @Override
-    public void update(Subject subject) {
-        // TODO Auto-generated method stub
-        
-    }
+
 
     @Override
     public void accept(AdminVisitor adminVisitor) {
         adminVisitor.visit(this);
+    }
+
+    @Override
+    public void attach(Observer observe) {
+        getFollowerList().add((Observer) observe);
+        
+    }
+
+    @Override
+    public void notifyAllObservers() {
+        for(Observer observe : followerList) {
+            ((User) observe).getNewsFeed().update((Message) subject);//.(Message) subject);
+        }
+        //TODO
+        
+    }
+
+    @Override
+    public void update(Subject subject) {
+        // TODO Auto-generated method stub
+        
     }
     
     

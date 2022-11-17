@@ -1,4 +1,4 @@
-public class Message {
+public class Message{
     
     private static int totalMessageCounter = 0;
     private String message;

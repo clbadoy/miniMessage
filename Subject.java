@@ -2,12 +2,15 @@ import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
-public abstract class Subject extends DefaultMutableTreeNode {
+public interface Subject {
     
-    private ArrayList<Observer> observer = new ArrayList<Observer>();
-    private int state;
+    //protected ArrayList<Observer> observer;
 
-    public int getState() {
+    public void attach(Observer observe);
+
+    public void notifyAllObservers();
+
+    /* public int getState() {
         return state;
     }
 
@@ -24,5 +27,5 @@ public abstract class Subject extends DefaultMutableTreeNode {
         for(Observer observe : observer) {
             observe.update(this);
         }
-    }
+    } */
 }
