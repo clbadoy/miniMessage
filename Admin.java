@@ -137,6 +137,7 @@ public class Admin extends JFrame {
 
         // Initialize left Side of UI + initialize Tree
         rootUserGroup = new UserGroup("root", new User("Admin"));
+        groupList.add(rootUserGroup);
         root = new DefaultMutableTreeNode(rootUserGroup.getGroupID());
         tree = new JTree(root);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -186,6 +187,20 @@ public class Admin extends JFrame {
             else {
                 JOptionPane.showMessageDialog(popupPane, "Error: Invalid input. Please enter a valid alphanumeric name.");
             }
+        });
+
+        createUserGroupButton.addActionListener(e -> {
+            DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            newGroup = groupField.getText();
+            if(newGroup.length() !=0 && newGroup.matches(alphaNumeric)) {
+                User person = searchUser(temp.getUserObject().toString());
+                addGroup(newGroup, person);
+            }
+            else {
+                JOptionPane.showMessageDialog(popupPane, "Error: Invalid input. Please enter a valid alphanumeric name.");
+            }
+
+            
         });
         
         
@@ -272,18 +287,42 @@ public class Admin extends JFrame {
     }
 
 
-    public void addUser(String username) {
-        User person = new User(username);
+    private void addUser(String username) {
+        DefaultMutableTreeNode userNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+        String temp = userNode.getUserObject().toString();
+        System.out.println(temp);
+        UserGroup tempG = searchGroup(temp);
+
+        if(groupList.contains(tempG)) { // TODO
+            User person = new User(username);
+            person.setGroupName(tempG.getGroupID());
+            tempG.addUser(person);  //TODO
+
+            DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(person.getUID());
+            userNode.add(newNode);
+
+            treeModel = (DefaultTreeModel) tree.getModel();
+            treeModel.reload();  
+            userList.add(person);    
+            }
+        else {
+            JOptionPane.showMessageDialog(popupPane, "Error: Not a valid group.");
+        }
+
+    }
+
+    private void addGroup(String groupName, User person) {
+        UserGroup group = new UserGroup(groupName, person);
+        groupList.add(group);
+        person.setGroupName(groupName);
 
         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(person.getUID());
         DefaultMutableTreeNode userNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+        userNode.setUserObject(groupName);
         userNode.add(newNode);
-        //root.add(newNode);
 
         treeModel = (DefaultTreeModel) tree.getModel();
         treeModel.reload();
-
-        userList.add(person);
 
     }
 
@@ -297,5 +336,17 @@ public class Admin extends JFrame {
 
         }
         return userList.get(index);
+    }
+
+    private UserGroup searchGroup(String uid) {
+        int index = 0;
+        for(int i = 0; i < groupList.size(); i++) {
+            if(groupList.get(i).toString().contains(uid)) {
+                index = i;
+                break;
+            }
+
+        }
+        return groupList.get(index);
     }
 }

@@ -8,6 +8,7 @@ public class User extends Observer implements Subject, Visitor {
     private ArrayList<User> followingList;
 
     private FeedList newsFeed;
+    private String groupID;
 
 
     public User(String uid) {
@@ -15,10 +16,15 @@ public class User extends Observer implements Subject, Visitor {
         followerList = new ArrayList<Observer>();
         followingList = new ArrayList<User>();
         newsFeed = new FeedList(this);
+        groupID = null;
     }
 
     public String getUID() {
         return userID;
+    }
+
+    public String getGroupID() {
+        return groupID;
     }
 
     public ArrayList<Observer> getFollowerList() {
@@ -41,6 +47,10 @@ public class User extends Observer implements Subject, Visitor {
     public void post(String string) {
         Message newMessage = new Message(this, string);
         newsFeed.sendMessage(newMessage); 
+    }
+
+    public void setGroupName(String gid) {
+        groupID = gid;
     }
 
     public String toString() {

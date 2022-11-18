@@ -30,4 +30,8 @@ public class UserGroup extends DefaultMutableTreeNode {
         userList.add(user);
     }    
 
+    public String toString() {
+        return getGroupID();
+    }
+
 }
