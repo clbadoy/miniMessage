@@ -66,6 +66,7 @@ public class Admin extends JFrame {
 
     private ArrayList<User> userList = new ArrayList<User>();
     private ArrayList<UserGroup> groupList = new ArrayList<UserGroup>();
+    private static ArrayList<JFrame> openPanels = new ArrayList<>();
 
     private String newUser;
     private String newGroup;
@@ -224,6 +225,8 @@ public class Admin extends JFrame {
             DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             User person = searchUser(temp.getUserObject().toString());
             UserDisplay showUserDisplay = new UserDisplay(person);
+            if(!openPanels.contains(showUserDisplay))
+                openPanels.add(showUserDisplay);
 
         }); //TODO
         // Button Functionality End
@@ -286,6 +289,14 @@ public class Admin extends JFrame {
         bottomRightPanel.add(displayPositiveMessageRatioButton);
     }
 
+    public ArrayList<JFrame> getOpenPanels() {
+        return openPanels;
+    }
+
+    public ArrayList<User> getUsers() {
+        return userList;
+    }
+
 
     private void addUser(String username) {
         DefaultMutableTreeNode userNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
@@ -326,7 +337,7 @@ public class Admin extends JFrame {
 
     }
 
-    private User searchUser(String uid) {
+    public User searchUser(String uid) {
         int index = -1;
         for(int i = 0; i < userList.size(); i++) {
             if(userList.get(i).toString().contains(uid)) {

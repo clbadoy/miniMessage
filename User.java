@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 
-public class User extends Observer implements Subject, Visitor {
+public class User implements Subject, Observer, Visitor {
 
     private String userID;
     private ArrayList<Observer> followerList;
@@ -9,6 +9,7 @@ public class User extends Observer implements Subject, Visitor {
 
     private FeedList newsFeed;
     private String groupID;
+    private Message newMessage;
 
 
     public User(String uid) {
@@ -17,6 +18,7 @@ public class User extends Observer implements Subject, Visitor {
         followingList = new ArrayList<User>();
         newsFeed = new FeedList(this);
         groupID = null;
+        newMessage = null;
     }
 
     public String getUID() {
@@ -40,13 +42,14 @@ public class User extends Observer implements Subject, Visitor {
     } 
 
     public void followUser(User uName) {
-        uName.getFollowingList().add(this);
+        this.getFollowingList().add(uName);
         attach(uName);
     }
 
     public void post(String string) {
-        Message newMessage = new Message(this, string);
+        newMessage = new Message(this, string);
         newsFeed.sendMessage(newMessage); 
+        notifyAllObservers();
     }
 
     public void setGroupName(String gid) {
@@ -67,24 +70,24 @@ public class User extends Observer implements Subject, Visitor {
 
     @Override
     public void attach(Observer observe) {
-        getFollowerList().add((Observer) observe);
+        ((User) observe).getFollowerList().add(this);
         
     }
 
     @Override
     public void notifyAllObservers() {
         for(Observer observe : followerList) {
-            ((User) observe).update(this);
+            observe.update(newMessage);
         }
-        //TODO
         
     }
 
     @Override
-    public void update(Subject subject) {
-        newsFeed.addToFeed((Message) subject);
+    public void update(Message message) {
+        newsFeed.addToFeed(message);
         
     }
-    
+
+   
     
 }

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FeedList extends Observer {
+public class FeedList{
     
     private static final List<String> GOOD_WORDS = Arrays.asList("good", "nice", "great");
     private List<Message> messages;
@@ -24,12 +24,22 @@ public class FeedList extends Observer {
         return positiveMessageCount;
     }
 
+    public Message getLatestMessage() {
+        return messages.get(0);
+    }
+
+    public void addToFeed(Message otherMessage)
+    {
+        messages.add(0, otherMessage);
+    }
+
+    //TODO
     public void sendMessage(Message newText) {
-        messages.add(0, newText);
+        addToFeed(newText);
         
         positiveMessageCount += isPositiveMessage(newText.getMessage());
 
-        //user.notifyAllObservers();
+        user.notifyAllObservers();
     }
 
     private int isPositiveMessage(String text) {
@@ -47,13 +57,5 @@ public class FeedList extends Observer {
         return test;
     }
 
-    private void addToFeed(Message otherMessage)
-    {
-        messages.add(0, otherMessage);
-    }
 
-    @Override
-    public void update(Subject subject) {
-        addToFeed((Message) subject);
-    }
 }
