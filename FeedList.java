@@ -1,3 +1,16 @@
+/*
+ *  Christian Badoy
+ *  CS3560
+ *  Profsessor Sun
+ *  17 November 2022
+ * 
+ *  The purpose of this project is to create a functioning mini Twitter GUI program using
+ *  the design patterns of Singleton, Composite, Visitor, and Observer. It also makes
+ *  us learn the basics of Java Swing.
+ * 
+ *  The FeedList contains methods involving live feed data, including sending, receiving, and viewing messages
+ *  from other users.
+ */
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +51,10 @@ public class FeedList{
         messages.add(0, otherMessage);
     }
 
-    //TODO
+    /*
+     * Tabulates message if it is positive while records total.
+     * Calls observers (followers) to receive the new message.
+     */
     public void sendMessage(Message newText) {
         addToFeed(newText);
         
@@ -47,6 +63,9 @@ public class FeedList{
         user.notifyAllObservers();
     }
 
+    /*
+     * Private method to determine whether or not a message contains positive words.
+     */
     private int isPositiveMessage(String text) {
         int test = 0;
         String lowText = text.toLowerCase();

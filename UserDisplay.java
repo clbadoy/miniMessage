@@ -1,3 +1,16 @@
+/*
+ *  Christian Badoy
+ *  CS3560
+ *  Profsessor Sun
+ *  17 November 2022
+ * 
+ *  The purpose of this project is to create a functioning mini Twitter GUI program using
+ *  the design patterns of Singleton, Composite, Visitor, and Observer. It also makes
+ *  us learn the basics of Java Swing.
+ * 
+ *  This is the GUI that allows the user to interact with several functions of a mini Twitter.
+ */
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -54,7 +67,7 @@ public class UserDisplay extends JFrame {
     }
 
     private void initComponents() {
-        // Initialize SideBySide Panel
+        // Initialize Panels with items in the same row.
         userFollowPanel = new JPanel(new FlowLayout());
         messageTweetPanel = new JPanel(new FlowLayout());
         displayPane = new JPanel();
@@ -62,27 +75,25 @@ public class UserDisplay extends JFrame {
         // Initilize the JFrame
         displayPane.setLayout(new BoxLayout(displayPane, BoxLayout.Y_AXIS));
         this.setSize(800, 600);
-        //this.getContentPane().getInsets().set(50,50,50,50);
         this.setResizable(false);
         this.setVisible(true);
 
-        // Initialize Text and Buttons
+        // Initialize Text and Buttons for the header.
+        // Contains information about the user along with a text field to enter a user to follow.
         userIDArea = new JTextPane();
         userIDArea.setText("User: " + user.getUID() + "   |||   Group: " + user.getGroupID());
         userIDArea.setBackground(getBackground());
+        userIDArea.setEditable(false);
         doc = userIDArea.getStyledDocument();
         center = new SimpleAttributeSet();
-        //StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-        //doc.setParagraphAttributes(0, doc.getLength(), center, false);
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
         followUserTextField = new JTextField();
         followUserTextField.setText("Input user ID to follow.");
         followButton = new JButton("Follow User");
 
-        // Applies Name to TextArea
-        userIDArea.setEditable(false);
-
-        //Establishes JList to display Followers.
+        // Establishes JList to display Followers on JFrame.
         followerViewer = new JList<>();
         followerViewer.setModel(followModel);
 
@@ -94,25 +105,35 @@ public class UserDisplay extends JFrame {
 
         crowdFollow();
 
-        // FollowButton Function Start
+        /* 
+         * FollowButton Function Start:
+         * Takes user String from textField and searches for user.
+         * Then updates JList field to display who the current user is following.
+         */ 
         followButton.addActionListener(e -> {
             String userToSearch = followUserTextField.getText();
             User toFollow = search(userToSearch);
             user.followUser(toFollow);
 
             followModel.addElement(toFollow);
-            
-            //updateFollowList(toFollow);
         });
+        
+        // When opening the user feed, it loads the information on who the user is currently following.
+        crowdFeed();
 
+        // Start Lower Half of JFrame
+
+        // Initializes Textfield for user to enter text to send a message.
         messageInput = new JTextField(50);
         messageInput.setText("Input Message");
-        //messageInput.setBounds(30, 30, 30, 30);
-        
-        crowdFeed();
-        // Start 2nd Half of Frame
         postMessageButton = new JButton("Post Message");
 
+        /*
+         * postMessageButton Functionality
+         * 1. Creates new Message Object.
+         * 2. Sends the message onto the user's feed.
+         * 3. Updates followers' feed.
+         */
         postMessageButton.addActionListener(e -> {
             String tweet = messageInput.getText();
             Message newText = new Message(user, tweet);
@@ -122,10 +143,10 @@ public class UserDisplay extends JFrame {
 
             updateFeed(newText);
 
-        }); //TODO
+        });
 
 
-
+        // Creates JList to display the messages.
         viewNewsFeed = new JList<>();
         viewNewsFeed.setModel(newsModel);
 
@@ -134,7 +155,7 @@ public class UserDisplay extends JFrame {
 
         viewNewsFeed.setBackground(Color.WHITE);
 
-        // Create first row
+        // Create first row of items onto JFrame.
 
         userFollowPanel.add(userIDArea);
         userFollowPanel.add(followUserTextField);
@@ -153,20 +174,21 @@ public class UserDisplay extends JFrame {
 
         this.add(displayPane); 
     }
-    /* 
-    private void updateFollowers() {
-        for(int i = 0; i < user.getFollowerList().size(); i++) {
-            ((UserDisplay) display).update((User)user.getFollowerList().get(i)).getNewsFeed().getLatestMessage();
-        }
-    }
-    */
 
+    /*
+     * Calls Admin instance to search for a specifc user given the JTextField
+     * that the user inputted.
+     */
     private User search(String userToSearch) {
         User tempPerson = Admin.getInstance().searchUser(userToSearch);
 
         return tempPerson;
     }
 
+    /*
+     * Generates a list of users that the selected user is following upon pressing
+     * "View User" in Admin Frame.
+     */
     private void crowdFeed() {
         int temp = user.getNewsFeed().getFeedList().size();
         for(int i = 0; i < temp; i++)
@@ -174,6 +196,11 @@ public class UserDisplay extends JFrame {
                 newsModel.addElement(user.getNewsFeed().getFeedList().get(temp - i - 1).toString());
             }
     }
+
+    /*
+     * Generates recent messages that the selected user received/sent upon pressing
+     * "View User" in Admin Frame.
+     */
     private void crowdFollow() {
         int temp = user.getFollowingList().size();
         for(int i = 0; i < temp; i++)
@@ -182,7 +209,10 @@ public class UserDisplay extends JFrame {
             }
 
     }
-
+    /*
+     * Method that conducts live updates to other users' followList IF a user follows the sender.
+     * Unused.
+     */
     private void updateFollowList(User str) {
         for(int i = 0; i < Admin.getInstance().getOpenPanels().size(); i++){
             if(user.getFollowerList().contains(((UserDisplay)Admin.getInstance().getOpenPanels().get(i)).getUser())) {
@@ -191,6 +221,9 @@ public class UserDisplay extends JFrame {
         }
     } 
 
+    /*
+     * Method that conducts live updates to other users' feedList IF a user follows the sender.
+     */
     private void updateFeed(Message text) {
         for(int i = 0; i < Admin.getInstance().getOpenPanels().size(); i++){
             if(user.getFollowerList().contains(((UserDisplay)Admin.getInstance().getOpenPanels().get(i)).getUser())) {
@@ -203,6 +236,9 @@ public class UserDisplay extends JFrame {
         return user;
     }
 
+    /*
+     * Method that gets newsModel/followModel. Used for updating other feeds in runtime.
+     */
     public DefaultListModel<String> getNewsModel() {
         return newsModel;
     }

@@ -1,31 +1,27 @@
-import java.util.ArrayList;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-
+/*
+ *  Christian Badoy
+ *  CS3560
+ *  Profsessor Sun
+ *  17 November 2022
+ * 
+ *  The purpose of this project is to create a functioning mini Twitter GUI program using
+ *  the design patterns of Singleton, Composite, Visitor, and Observer. It also makes
+ *  us learn the basics of Java Swing.
+ * 
+ *  The Subject interface is used to implement a follow system for users and is used for
+ *  live updating.
+ */
 public interface Subject {
-    
-    //protected ArrayList<Observer> observer;
 
+    /*
+     * Adds a user to the follower list of the main User.
+     */
     public void attach(Observer observe);
 
+    /*
+     * Notifies all of the followers of a new post/message
+     * to automatically update to Feed.
+     */
     public void notifyAllObservers();
 
-    /* public int getState() {
-        return state;
-    }
-
-    public void setState(int state) {
-        this.state = state;
-        notifyAllObservers();
-    }
-
-    public void attach(Observer observe) {
-        observer.add(observe);
-    }
-    
-    public void notifyAllObservers() {
-        for(Observer observe : observer) {
-            observe.update(this);
-        }
-    } */
 }

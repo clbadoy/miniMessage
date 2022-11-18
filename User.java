@@ -1,7 +1,20 @@
+/*
+ *  Christian Badoy
+ *  CS3560
+ *  Profsessor Sun
+ *  17 November 2022
+ * 
+ *  The purpose of this project is to create a functioning mini Twitter GUI program using
+ *  the design patterns of Singleton, Composite, Visitor, and Observer. It also makes
+ *  us learn the basics of Java Swing.
+ * 
+ *  The User class contains metadata about the user, has his/her own feed to read, and post.
+ */
 import java.util.ArrayList;
 
+import javax.swing.tree.DefaultMutableTreeNode;
 
-public class User implements Subject, Observer, Visitor {
+public class User extends DefaultMutableTreeNode implements Subject, Observer, Visitor {
 
     private String userID;
     private ArrayList<Observer> followerList;
@@ -41,11 +54,21 @@ public class User implements Subject, Observer, Visitor {
         return newsFeed;
     } 
 
+    /*
+     * Upon a user pressing the follow button,
+     * Adds typed username to the folowing list of the user.
+     * Attach function adds the current user to the other User's follower list.
+     * Uses Observer pattern,
+     */
     public void followUser(User uName) {
         this.getFollowingList().add(uName);
         attach(uName);
     }
 
+    /*
+     * Post method that uses Observer pattern to update followers' feeds with
+     * the user's recent message.
+     */
     public void post(String string) {
         newMessage = new Message(this, string);
         newsFeed.sendMessage(newMessage); 
@@ -59,21 +82,28 @@ public class User implements Subject, Observer, Visitor {
     public String toString() {
         return getUID();
     }
-    
-    // Update Feed
 
-
+    /*
+     * Visitor pattern to allow variations types of Visitor classes.
+     * Used for conducting calculations.
+     */
     @Override
     public void accept(AdminVisitor adminVisitor) {
         adminVisitor.visit(this);
     } // TODO
 
+    /*
+     * Observer pattern used to attach users to follower lists of another user.
+     */
     @Override
     public void attach(Observer observe) {
         ((User) observe).getFollowerList().add(this);
         
     }
 
+    /*
+     * Observer pattern to notify all of the users about the new post made.
+     */
     @Override
     public void notifyAllObservers() {
         for(Observer observe : followerList) {
@@ -82,6 +112,9 @@ public class User implements Subject, Observer, Visitor {
         
     }
 
+    /*
+     * Observer pattern to update the feeds of other users.
+     */
     @Override
     public void update(Message message) {
         newsFeed.addToFeed(message);
