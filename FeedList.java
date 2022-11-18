@@ -9,10 +9,12 @@ public class FeedList{
     private User user;
 
     private int positiveMessageCount;
+    private int messageCount;
 
     public FeedList(User person) {
         messages = new ArrayList<>();
         positiveMessageCount = 0;
+        messageCount = 0;
         user = person;
     }
 
@@ -24,6 +26,9 @@ public class FeedList{
         return positiveMessageCount;
     }
 
+    public int getMessageCount() {
+        return messageCount;
+    }
     public Message getLatestMessage() {
         return messages.get(0);
     }
@@ -38,7 +43,7 @@ public class FeedList{
         addToFeed(newText);
         
         positiveMessageCount += isPositiveMessage(newText.getMessage());
-
+        messageCount++;
         user.notifyAllObservers();
     }
 

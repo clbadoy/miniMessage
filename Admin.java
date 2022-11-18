@@ -276,7 +276,15 @@ public class Admin extends JFrame {
 
         displayPositiveMessageRatioButton.addActionListener(e -> {
             DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-            displayPositiveMessageRatioButton.setText(temp.getUserObject().toString());
+            User person = searchUser(temp.getUserObject().toString());
+
+            TotalButtonCalculator visitButton = new TotalButtonCalculator();
+            PositiveRatioCalculator visitPositive = new PositiveRatioCalculator();
+            person.accept(visitButton);
+            person.accept(visitPositive);
+
+            double percentage = 100 * ((double)visitPositive.visit(person))/ ((double)visitButton.visit(person));
+            JOptionPane.showMessageDialog(popupPane, "Percentatge of positive messages that " + person.getUID() +" sent: " + percentage + "%");
         });
         //TODO
         
