@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 
 
-public class User extends Observer implements Visitor, Subject {
+public class User extends Observer implements Subject, Visitor {
 
     private String userID;
     private ArrayList<Observer> followerList;
     private ArrayList<User> followingList;
 
     private FeedList newsFeed;
+
 
     public User(String uid) {
         userID = uid;
@@ -37,6 +38,11 @@ public class User extends Observer implements Visitor, Subject {
         attach(uName);
     }
 
+    public void post(String string) {
+        Message newMessage = new Message(this, string);
+        newsFeed.sendMessage(newMessage); 
+    }
+
     public String toString() {
         return getUID();
     }
@@ -47,7 +53,7 @@ public class User extends Observer implements Visitor, Subject {
     @Override
     public void accept(AdminVisitor adminVisitor) {
         adminVisitor.visit(this);
-    }
+    } // TODO
 
     @Override
     public void attach(Observer observe) {
@@ -58,7 +64,7 @@ public class User extends Observer implements Visitor, Subject {
     @Override
     public void notifyAllObservers() {
         for(Observer observe : followerList) {
-            ((User) observe).getNewsFeed().update((Message) subject);//.(Message) subject);
+            ((User) observe).update(this);
         }
         //TODO
         
@@ -66,7 +72,7 @@ public class User extends Observer implements Visitor, Subject {
 
     @Override
     public void update(Subject subject) {
-        // TODO Auto-generated method stub
+        newsFeed.addToFeed((Message) subject);
         
     }
     

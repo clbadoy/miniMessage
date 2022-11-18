@@ -83,8 +83,19 @@ public class UserDisplay extends JFrame {
         followPane.setBackground(Color.WHITE);
 
         messageInput = new JTextField(50);
+        messageInput.setText("Input Message");
         //messageInput.setBounds(30, 30, 30, 30);
         postMessageButton = new JButton("Post Message");
+
+
+        
+        postMessageButton.addActionListener(e -> {
+            String tweet = messageInput.getText();
+            Message newText = new Message(user, tweet);
+            user.getNewsFeed().sendMessage(newText);
+        }); //TODO
+
+
 
         viewNewsFeed = new JList();
 
