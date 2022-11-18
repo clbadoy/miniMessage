@@ -21,7 +21,7 @@ import java.util.regex.*;
 import java.util.ArrayList;
 
 
-public class Admin extends JFrame implements AdminVisitor {
+public class Admin extends JFrame {
     
     private static Admin instance = null;
 
@@ -69,6 +69,8 @@ public class Admin extends JFrame implements AdminVisitor {
 
     private String newUser;
     private String newGroup;
+
+    
 
     private static String alphaNumeric = "^[a-zA-Z0-9_]+$";
 
@@ -202,6 +204,13 @@ public class Admin extends JFrame implements AdminVisitor {
         //} 
         
         ); */
+
+        viewUserButton.addActionListener(e -> {
+            DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            User person = searchUser(temp.getUserObject().toString());
+            UserDisplay showUserDisplay = new UserDisplay(person);
+
+        }); //TODO
         // Button Functionality End
 
         userPanel.add(userField);
@@ -236,6 +245,22 @@ public class Admin extends JFrame implements AdminVisitor {
         displayTotalGroupButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(popupPane, "Total Groups: " + groupList.size());
         });
+
+        displayTotalMessageButton.addActionListener(e -> {
+            DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            User person = searchUser(temp.getUserObject().toString());
+            
+            TotalButtonCalculator visitor = new TotalButtonCalculator();
+
+            person.accept(visitor);
+            JOptionPane.showMessageDialog(popupPane, "Total Messages in " + person.getUID() + "'s Feed: " + visitor.visit(person));
+        });
+
+        displayPositiveMessageRatioButton.addActionListener(e -> {
+            DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+            displayPositiveMessageRatioButton.setText(temp.getUserObject().toString());
+        });
+        //TODO
         
 
         // Button Functionality End
@@ -261,9 +286,16 @@ public class Admin extends JFrame implements AdminVisitor {
         userList.add(person);
 
     }
-    @Override
-    public void visit(User user) {
-        // TODO Auto-generated method stub
-        
+
+    private User searchUser(String uid) {
+        int index = -1;
+        for(int i = 0; i < userList.size(); i++) {
+            if(userList.get(i).toString().contains(uid)) {
+                index = i;
+                break;
+            }
+
+        }
+        return userList.get(index);
     }
 }
