@@ -1,3 +1,15 @@
+/*
+ *  Christian Badoy
+ *  CS3560
+ *  Profsessor Sun
+ *  17 November 2022
+ * 
+ *  The purpose of this project is to create a functioning mini Twitter GUI program using
+ *  the design patterns of Singleton, Composite, Visitor, and Observer. It also makes
+ *  us learn the basics of Java Swing.
+ * 
+ *  The Admin class that provides functionality to test most of the features of a minitwitter.
+ */
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
@@ -44,10 +56,6 @@ public class Admin extends JFrame {
     private JButton createUserGroupButton;
     private JButton viewUserButton;
 
-/*  private JPanel upperPanelRegion;
-    private JPanel lowerPanelRegion;
-    private JPanel leftPanelRegion; */
-    
     // Bottom Right Panels and Buttons Heirarchy
     private GridLayout bottomRightLayout;
     private JPanel bottomRightPanel;
@@ -105,12 +113,6 @@ public class Admin extends JFrame {
         this.getContentPane().getInsets().set(10,10,10,10);
         this.setResizable(false);
 
-        // Initialize Popup
-        /*popUp = new JFrame("Pop Up");
-        this.setLayout(new GridBagLayout());
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(400, 400); */
-
         // Initialize right side of UI
         rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
@@ -121,13 +123,12 @@ public class Admin extends JFrame {
         // Initialize Bottom Right Layout
         initBottomRightLayout();
 
-        // Setup Right side of the UI
+        // Combine items to the right side of the UI
         rightPanel.add(topRightPanel);
         rightPanel.add(Box.createVerticalStrut(300));
         rightPanel.add(bottomRightPanel);
 
         // Add rightPanel to JFrame via GridBagLayout
-
         rightPanel.add(bottomRightPanel);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.5;
@@ -147,7 +148,6 @@ public class Admin extends JFrame {
         pane.setBounds(25, 25, 200, 700);
 
         // Add Tree to Left side of UI
-
         c.fill = GridBagConstraints.HORIZONTAL;
         c.ipadx = 300;
         c.weightx = 0.5;
@@ -156,12 +156,14 @@ public class Admin extends JFrame {
         c.gridy = 0;
         this.getContentPane().add(pane, c);
 
-
-
         // Finalize Initialization
         this.setVisible(true);
     }
 
+    /*
+     * Creates Top Right Layout and implements functionalities for the buttons.
+     * Contains userField, groupField, createUserButton, createUserGroupButton, and viewUserButton.
+     */
     private void initTopRightLayout() {
         // Create 
         topRightLayout = new GridLayout(3, 0, 10, 10);
@@ -204,23 +206,6 @@ public class Admin extends JFrame {
             
         });
         
-        
-        
-        /*(e -> {
-            newUser = userField.getText();
-    //        if(newUser.length() != 0 && newUser.matches(alphaNumeric)) {
-                User aPerson = new User(newUser);
-                root.add(new DefaultMutableTreeNode(aPerson));
-                treeModel = (DefaultTreeModel) tree.getModel();
-                treeModel.reload();
-      //      }
-        //    else {
-          //      JOptionPane.showMessageDialog(popupPane, "Error: Invalid input. Please make user alphanumeric.");
-            }
-        //} 
-        
-        ); */
-
         viewUserButton.addActionListener(e -> {
             DefaultMutableTreeNode temp = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             User person = searchUser(temp.getUserObject().toString());
@@ -228,7 +213,7 @@ public class Admin extends JFrame {
             if(!openPanels.contains(showUserDisplay))
                 openPanels.add(showUserDisplay);
 
-        }); //TODO
+        });
         // Button Functionality End
 
         userPanel.add(userField);
@@ -245,6 +230,10 @@ public class Admin extends JFrame {
 
     }
 
+    /*
+     * Creates Bottom Right Layout and implements functionalities for the buttons.
+     * Contains displayTotalUserButton, displayTotalGroupButton, displayTotalMessageButton, and displayPosRatioButton.
+     */
     private void initBottomRightLayout() {
         bottomRightLayout = new GridLayout(2, 2, 30, 20);
         bottomRightPanel = new JPanel(bottomRightLayout);
@@ -286,9 +275,6 @@ public class Admin extends JFrame {
             double percentage = 100 * ((double)visitPositive.visit(person))/ ((double)visitButton.visit(person));
             JOptionPane.showMessageDialog(popupPane, "Percentatge of positive messages that " + person.getUID() +" sent: " + percentage + "%");
         });
-        //TODO
-        
-
         // Button Functionality End
 
         bottomRightPanel.add(displayTotalUserButton);
@@ -297,6 +283,9 @@ public class Admin extends JFrame {
         bottomRightPanel.add(displayPositiveMessageRatioButton);
     }
 
+    /*
+     * Gets arrayList of opened User JFrames. Updates user frames in runtime.
+     */
     public ArrayList<JFrame> getOpenPanels() {
         return openPanels;
     }
@@ -305,7 +294,9 @@ public class Admin extends JFrame {
         return userList;
     }
 
-
+    /*
+     * Adds user based on what group is currently selected.
+     */
     private void addUser(String username) {
         DefaultMutableTreeNode userNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
         String temp = userNode.getUserObject().toString();
@@ -330,6 +321,9 @@ public class Admin extends JFrame {
 
     }
 
+    /*
+     * Creates group and adds selected user into the group.
+     */
     private void addGroup(String groupName, User person) {
         UserGroup group = new UserGroup(groupName, person);
         groupList.add(group);
@@ -345,6 +339,9 @@ public class Admin extends JFrame {
 
     }
 
+    /*
+     * Conducts search for a user.
+     */
     public User searchUser(String uid) {
         int index = -1;
         for(int i = 0; i < userList.size(); i++) {
@@ -357,6 +354,9 @@ public class Admin extends JFrame {
         return userList.get(index);
     }
 
+    /*
+     * Conducts searching for a userGroup.
+     */
     private UserGroup searchGroup(String uid) {
         int index = 0;
         for(int i = 0; i < groupList.size(); i++) {
