@@ -10,6 +10,7 @@
  * 
  *  The User class contains metadata about the user, has his/her own feed to read, and post.
  */
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -20,9 +21,14 @@ public class User extends DefaultMutableTreeNode implements Subject, Observer, V
     private ArrayList<Observer> followerList;
     private ArrayList<User> followingList;
 
+    private long creationTime;
+    private long lastUpdateTime;
+    private Timestamp timeCreation;
+    private Timestamp timeUpdate;
     private FeedList newsFeed;
     private String groupID;
     private Message newMessage;
+    
 
 
     public User(String uid) {
@@ -32,6 +38,11 @@ public class User extends DefaultMutableTreeNode implements Subject, Observer, V
         newsFeed = new FeedList(this);
         groupID = null;
         newMessage = null;
+        creationTime = System.currentTimeMillis();
+        lastUpdateTime = System.currentTimeMillis();
+        timeCreation = new Timestamp(creationTime);
+        timeUpdate = new Timestamp(lastUpdateTime);
+        System.out.println(printCreationTimeToConsole());
     }
 
     public String getUID() {
@@ -52,7 +63,20 @@ public class User extends DefaultMutableTreeNode implements Subject, Observer, V
 
     public FeedList getNewsFeed() {
         return newsFeed;
-    } 
+    }
+    
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void refreshLastUpdateTime() {
+        lastUpdateTime = System.currentTimeMillis();
+        timeUpdate.setTime(lastUpdateTime);
+    }
 
     /*
      * Upon a user pressing the follow button,
@@ -81,6 +105,16 @@ public class User extends DefaultMutableTreeNode implements Subject, Observer, V
 
     public String toString() {
         return getUID();
+    }
+
+    public String printCreationTimeToConsole() {
+        String temp = "User \"" + getUID() + "\" has been created @ " + timeCreation.toString();
+        return temp;
+    }
+
+    public String printUserUpdateToConsole() {
+        String temp = "User \"" + getUID() + "\" has created a new post @ " + timeUpdate.toString() + "!";
+        return temp;
     }
 
     /*

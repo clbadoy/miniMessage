@@ -57,6 +57,9 @@ public class FeedList{
      */
     public void sendMessage(Message newText) {
         addToFeed(newText);
+
+        user.refreshLastUpdateTime();
+        System.out.println(user.printUserUpdateToConsole());
         
         positiveMessageCount += isPositiveMessage(newText.getMessage());
         messageCount++;

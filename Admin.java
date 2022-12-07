@@ -48,6 +48,7 @@ public class Admin extends JFrame {
     private JPanel topRightPanel;
     private JPanel userPanel;
     private JPanel groupPanel;
+    private JPanel verifyLastPanel;
 
     private JTextField userField;
     private JTextField groupField;
@@ -55,6 +56,9 @@ public class Admin extends JFrame {
     private JButton createUserButton;
     private JButton createUserGroupButton;
     private JButton viewUserButton;
+
+    private JButton verifyUniqueButton;
+    private JButton getLastUpdatedUserButton;
 
     // Bottom Right Panels and Buttons Heirarchy
     private GridLayout bottomRightLayout;
@@ -125,7 +129,7 @@ public class Admin extends JFrame {
 
         // Combine items to the right side of the UI
         rightPanel.add(topRightPanel);
-        rightPanel.add(Box.createVerticalStrut(300));
+        rightPanel.add(Box.createVerticalStrut(250));
         rightPanel.add(bottomRightPanel);
 
         // Add rightPanel to JFrame via GridBagLayout
@@ -166,11 +170,12 @@ public class Admin extends JFrame {
      */
     private void initTopRightLayout() {
         // Create 
-        topRightLayout = new GridLayout(3, 0, 10, 10);
+        topRightLayout = new GridLayout(4, 0, 10, 10);
         topRightPanel = new JPanel(topRightLayout);
 
         userPanel = new JPanel(new FlowLayout());
         groupPanel = new JPanel(new FlowLayout());
+        verifyLastPanel = new JPanel(new FlowLayout());
         topRightPanel = new JPanel(topRightLayout);
 
         userField = new JTextField(20);
@@ -180,6 +185,8 @@ public class Admin extends JFrame {
         createUserButton = new JButton("Create User");
         createUserGroupButton = new JButton("Create Group");
         viewUserButton = new JButton("Show User View");
+        verifyUniqueButton = new JButton("Verify Valid User & Group IDs");
+        getLastUpdatedUserButton = new JButton("Get Last updated User");
 
         // Button Functionality Start
         createUserButton.addActionListener(e -> {
@@ -214,6 +221,19 @@ public class Admin extends JFrame {
                 openPanels.add(showUserDisplay);
 
         });
+
+        getLastUpdatedUserButton.addActionListener(e -> {
+            User temp = null;
+            long latest = 0;
+            for(int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).getLastUpdateTime() > latest) {
+                    temp = userList.get(i);
+                    latest = userList.get(i).getLastUpdateTime();
+                }
+            }
+            
+            JOptionPane.showMessageDialog(popupPane, "User with who conducted the most recent update: " + temp.getUID());
+        });
         // Button Functionality End
 
         userPanel.add(userField);
@@ -222,11 +242,16 @@ public class Admin extends JFrame {
         // Makes a Panel for group Fields
         groupPanel.add(groupField);
         groupPanel.add(createUserGroupButton);
+
+        // Makes a Panel for Validation Button and Last Updated User
+        verifyLastPanel.add(verifyUniqueButton);
+        verifyLastPanel.add(getLastUpdatedUserButton);
         
         // Creates Panel with UserPanels and GroupPanels together.
         topRightPanel.add(userPanel);
         topRightPanel.add(groupPanel);
         topRightPanel.add(viewUserButton);
+        topRightPanel.add(verifyLastPanel);
 
     }
 
