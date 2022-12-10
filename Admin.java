@@ -31,6 +31,7 @@ import java.awt.event.*;
 
 import java.util.regex.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Admin extends JFrame {
@@ -76,8 +77,8 @@ public class Admin extends JFrame {
     private JTree tree;
     private DefaultMutableTreeNode root;
 
-    private ArrayList<User> userList = new ArrayList<User>();
-    private ArrayList<UserGroup> groupList = new ArrayList<UserGroup>();
+    private ArrayList<User> userList;
+    private ArrayList<UserGroup> groupList;
     private static ArrayList<JFrame> openPanels = new ArrayList<>();
 
     private String newUser;
@@ -91,6 +92,8 @@ public class Admin extends JFrame {
     // Constructor that revents classes to create another object of the Admin Class.
     private Admin()
     {
+        userList = new ArrayList<>();
+        groupList = new ArrayList<>();
         initComponents();
     }
 
@@ -222,6 +225,19 @@ public class Admin extends JFrame {
 
         });
 
+        verifyUniqueButton.addActionListener(e -> {
+            String temp = "Status of if Users/Groups are valid: ";
+            if(isValid(getUsers(),getGroups()))
+            {
+                temp += "Valid/Unique.";
+            }
+            else {
+                temp += "Invalid.";
+            }
+
+            JOptionPane.showMessageDialog(popupPane, temp);
+        });
+
         getLastUpdatedUserButton.addActionListener(e -> {
             User temp = null;
             long latest = 0;
@@ -319,6 +335,10 @@ public class Admin extends JFrame {
         return userList;
     }
 
+    public ArrayList<UserGroup> getGroups() {
+        return groupList;
+    }
+
     /*
      * Adds user based on what group is currently selected.
      */
@@ -392,5 +412,56 @@ public class Admin extends JFrame {
 
         }
         return groupList.get(index);
+    }
+
+    private boolean isValid(ArrayList<User> user, ArrayList<UserGroup> group) {
+        // User ID to User ID Comparisons
+        if(user.size() > 1) {
+            for(int i = 0; i < user.size(); i++)
+                for(int j = i+1; j < user.size(); j++)
+                {
+                    if(user.get(i).getUID().equals(user.get(j).getUID()))
+                    {
+                        return false;
+                    }
+                }
+        }
+        // UserGroup ID to UserGroup ID Comparisons
+        if(group.size() > 1) {
+            for(int i = 0; i < group.size(); i++)
+                for(int j = i+1; j < group.size(); j++)
+                {
+                    if(group.get(i).getGroupID().equals(group.get(j).getGroupID()))
+                    {
+                        return false;
+                    }
+                }
+        }
+        
+        // User to UserGroup
+        // Case 1: User = 1, Group = 1
+        if(user.size() == 1 && group.size() == 1)
+        {
+            if(user.get(0).getUID().equals(group.get(0).getGroupID()))
+            {
+                return false;
+            }
+        }
+        // Case 2:
+        else if(user.size() > 1 || group.size() > 1)
+        {
+            for(int i = 0; i < group.size(); i++)
+            {
+                for(int j = 0; j < user.size(); j++)
+                {
+                    if(user.get(j).getUID().equals(group.get(i).getGroupID()))
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 }
